@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Card</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+
+        .star {
+            color: #FFD700;
+        }
+
+        .star-empty {
+            color: #D1D5DB;
+        }
+
+        .color-selector span {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .color-selector span:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-selector span.selected {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, #e2e8f0, bg-gray-200);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            max-width: 1200px;
+            width: 100%;
+            padding: 32px;
+            margin-bottom: 2rem;
+        }
+
+        .main-image {
+            animation: fall 1s ease-in-out;
+        }
+
+        .thumbnail:nth-child(1) {
+            animation: fly-in-left 1s ease-in-out;
+        }
+
+        .thumbnail:nth-child(2) {
+            animation: fly-in-right 1s ease-in-out;
+        }
+
+        .thumbnail:nth-child(3) {
+            animation: fly-in-left 1s ease-in-out;
+        }
+
+        .thumbnail:nth-child(4) {
+            animation: fly-in-right 1s ease-in-out;
+        }
+
+        .buy-button,
+        .cart-button {
+            background: #dc2626;
+            color: white;
+            border: 2px solid #dc2626;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .buy-button:hover,
+        .cart-button:hover {
+            background: white;
+            color: #dc2626;
+        }
+
+
+        .tabs-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tabs button {
+            background-color: transparent;
+            border: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s, border-bottom-color 0.3s;
+            position: relative;
+        }
+
+        .tabs button:hover {
+            color: #dc2626;
+        }
+
+        .tabs button::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 2px;
+            background: #dc2626;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .tabs button:hover::after,
+        .tabs button.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+
+        .review-star {
+                    cursor: pointer;
+                    font-size: 2rem;
+                    color: #e4e5e9;
+                    transition: color 0.3s, transform 0.3s;
+                }
+                .review-star:hover,
+                .review-star.selected {
+                    color: #dc2626;
+                    transform: scale(1.3);
+                }
+                .review-star.selected {
+                    color: #dc2626;
+                }
+                #review-form {
+                    transition: transform 0.3s;
+                }
+                #review-message {
+                    transition: border-color 0.3s, box-shadow 0.3s;
+                }
+                #review-message:focus {
+                    border-color: #dc2626;
+                    box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);
+                }
+                .star-pop {
+                    position: absolute;
+                    color: #dc2626;
+                    font-size: 1.5rem;
+                    animation: pop 1s ease-out forwards;
+                }
+                @keyframes pop {
+                    0% {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: translateY(-150px) scale(0.5);
+                    }
+                }
+                .review:hover .star {
+                    color: #dc2626;
+                }
+                .review:hover .star-empty {
+                    color: #e4e5e9;
+                }
+
+
+        @keyframes fall {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fly-in-left {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fly-in-right {
+            0% {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white flex flex-col items-center min-h-screen">
+    <div class="product-card mx-auto">
+        <div class="flex flex-col lg:flex-row">
+            <!-- Image Thumbnails -->
+            <div class="flex flex-col items-center lg:w-1/5 justify-center space-y-4">
+                <img src="./iPhone-14-Pro-Max-PNG.png" alt="Thumbnail 1" class="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 hover:border-gray-400 cursor-pointer thumbnail" onclick="swapImage(this)">
+                <img src="/mnt/data/image.png" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 hover:border-gray-400 cursor-pointer thumbnail" onclick="swapImage(this)">
+                <img src="./WhatsApp Image 2024-06-02 at 23.15.02_0d6f8407.jpg" alt="Thumbnail 3" class="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 hover:border-gray-400 cursor-pointer thumbnail" onclick="swapImage(this)">
+                <img src="./WhatsApp Image 2024-06-02 at 23.15.03_3df284ea.jpg" alt="Thumbnail 4" class="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 hover:border-gray-400 cursor-pointer thumbnail" onclick="swapImage(this)">
+            </div>
+            <!-- Main Image -->
+            <div class="flex-1 flex items-center justify-center p-6 border-r border-gray-300 relative">
+                <div class="absolute top-4 left-4 bg-red-500 text-white text-xs uppercase px-2 py-1 rounded-full">25% off</div>
+                <img src="./iPhone-14-Pro-Max-PNG.png" alt="Main Product" id="main-image" class="w-full max-w-sm object-cover main-image">
+            </div>
+            <!-- Product Details -->
+            <div class="lg:w-1/2 p-6">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Havic HV G-92 Gamepad</h2>
+                <div class="flex items-center mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="far fa-star star-empty"></i>
+                    </div>
+                    <p class="text-gray-600 ml-2">(150 Reviews)</p>
+                </div>
+                <p class="text-gray-500 mb-4">PlayStation 5 Controller Skin High quality vinyl with air channel adhesive for easy bubble free install & mess free removal Pressure sensitive.</p>
+                <div class="flex items-center mb-6">
+                    <p class="text-2xl font-bold text-gray-900 mr-2">$192.00</p>
+                </div>
+                <div class="color-selector mb-6">
+                    <h4 class="text-gray-700 mb-2">Colours:</h4>
+                    <div class="flex space-x-2">
+                        <span class="w-8 h-8 bg-gray-800 rounded-full border-4 border-gray-800 selected" onclick="selectColor(this, '#1A202C')"></span>
+                        <span class="w-8 h-8 bg-red-600 rounded-full border-4 border-transparent" onclick="selectColor(this, '#E53E3E')"></span>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h4 class="text-gray-700 mb-2">Size:</h4>
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 bg-gray-200 rounded-lg">XS</button>
+                        <button class="px-4 py-2 bg-gray-200 rounded-lg">S</button>
+                        <button class="px-4 py-2 bg-gray-300 rounded-lg font-bold">M</button>
+                        <button class="px-4 py-2 bg-gray-200 rounded-lg">L</button>
+                        <button class="px-4 py-2 bg-gray-200 rounded-lg">XL</button>
+                    </div>
+                </div>
+                <div class="flex items-center mb-4">
+                    <button class="px-4 py-2 bg-gray-300 rounded-lg" onclick="decreaseQuantity()">-</button>
+                    <input type="number" id="quantity" value="2" class="w-16 text-center border border-gray-300 rounded-lg mx-2">
+                    <button class="px-4 py-2 bg-gray-300 rounded-lg" onclick="increaseQuantity()">+</button>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <button class="cart-button w-1/2 py-3 mb-4 rounded-lg font-semibold uppercase tracking-wide flex items-center justify-center mr-2">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>
+                    <button class="buy-button w-1/2 py-3 mb-4 rounded-lg font-semibold uppercase tracking-wide flex items-center justify-center">
+                        <i class="fas fa-bolt mr-2"></i> Buy Now
+                    </button>
+                </div>
+                <!-- New Section Start -->
+                <div class="flex flex-col lg:flex-row border-t border-gray-300 pt-4">
+                    <div class="flex items-center mb-4 lg:mb-0 lg:mr-4">
+                        <i class="fas fa-shipping-fast text-gray-900 text-2xl mr-2"></i>
+                        <div>
+                            <p class="font-bold" style="color:rgb(31, 204, 204);">Free Delivery</p>
+                            <p class="text-sm text-gray-500">Enter your postal code for Delivery Availability</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center mb-4 lg:mb-0 lg:mr-4">
+                        <i class="fas fa-undo text-gray-900 text-2xl mr-2"></i>
+                        <div>
+                            <p class="font-bold" style="color: rgb(225, 51, 51);">Return Delivery</p>
+                            <p class="text-sm text-gray-500">Free 30 Days Delivery Returns.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="far fa-check-square text-gray-900 text-2xl mr-2"></i>
+                        <div>
+                            <p class="font-bold" style="color: green;">In Stock</p>
+                            <p class="text-sm text-gray-500">Ready for Immediate Dispatch</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- New Section End -->
+            </div>
+        </div>
+    </div>
+    <!-- Separate Box for Tabs Section -->
+    <div class="tabs-container mx-auto">
+        <!-- Tab Section Start -->
+        <div class="tab-section">
+            <div class="tabs flex justify-around border-b border-gray-300 mb-4">
+                <button class="tab-link active" onclick="openTab(event, 'description')">Description</button>
+                <button class="tab-link" onclick="openTab(event, 'specification')">Specification</button>
+                <button class="tab-link" onclick="openTab(event, 'reviews')">Reviews</button>
+            </div>
+            <div id="description" class="tab-content active">
+                <p>The LG C2 42 (106cm) 4K Smart OLED evo TV is the best all-around OLED TV we've tested. Although all OLEDs deliver similar fantastic picture quality, this one stands out for its value because it has many gaming-oriented features that are great for gamers.</p>
+                <ul class="list-disc list-inside mt-2">
+                    <li>*Only 65G2 is shown in the image for example purposes. All 2022 LG OLED models feature eco-friendly packaging.</li>
+                    <li>**65C2 Stand model is at a minimum 39% lighter than the C1 series.</li>
+                    <li>*The 'Reducing CO2' footprint label applies to 65C2 only. All other C2 models feature a 'CO2 Measured' label.</li>
+                    <li>**UL ECV certification based on TV frame and back cover. Percentage of recycled content varies by model and size.</li>
+                </ul>
+            </div>
+            <div id="specification" class="tab-content">
+                <p>Specifications content goes here...</p>
+            </div>
+            
+           
+
+
+
+            <!-- Review Start  -->
+
+
+            <div id="reviews" class="tab-content">
+                <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+                    <h4 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Want to add a review?</h4>
+                    <div class="flex justify-center mb-6">
+                        <div class="flex space-x-2">
+                            <i class="far fa-star review-star" data-rating="1"></i>
+                            <i class="far fa-star review-star" data-rating="2"></i>
+                            <i class="far fa-star review-star" data-rating="3"></i>
+                            <i class="far fa-star review-star" data-rating="4"></i>
+                            <i class="far fa-star review-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <form id="review-form" class="relative">
+                        <div class="mb-4">
+                            <label for="review-message" class="block text-gray-700 font-medium mb-2">Your Review:</label>
+                            <textarea id="review-message" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" rows="4" required></textarea>
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="relative px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-lg hover:bg-red-500 transition duration-300 transform hover:scale-105">Submit Review</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="mt-8">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center underline decoration-red-600">What Our Customers Are Saying</h3>
+                    <div class="space-y-4">
+                        <div class="review p-4 bg-gray-100 rounded-lg shadow-md relative transform hover:scale-105 transition-transform duration-300">
+                            <div class="flex items-center mb-2">
+                                <img src="./iPhone-14-Pro-Max-PNG.png" alt="Veronica Limonova" class="w-10 h-10 rounded-full mr-2 border-2 border-red-600">
+                                <p class="font-bold text-gray-900">Iphone 14 pro</p>
+                                <div class="ml-2 flex items-center">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="far fa-star star-empty"></i>
+                                </div>
+                                
+                            </div>
+                            <p class=" mb-2 text-gray-700">
+                                its a good phone
+                            <p class="text-gray-500 text-sm">December 18</p>
+                            <div class="absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl-lg">4 Stars</div>
+                            <div class="absolute bottom-2 right-2 text-gray-500 text-xs">Verified Purchase</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+           
+            
+            
+            
+
+            
+            
+
+
+
+
+
+        </div>
+        <!-- Tab Section End -->
+    </div>
+    <script>
+        function swapImage(element) {
+            const mainImage = document.getElementById('main-image');
+            mainImage.src = element.src;
+        }
+
+        function selectColor(element, color) {
+            const spans = document.querySelectorAll('.color-selector span');
+            spans.forEach(span => span.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function increaseQuantity() {
+            const quantityInput = document.getElementById('quantity');
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+        }
+
+        function decreaseQuantity() {
+            const quantityInput = document.getElementById('quantity');
+            if (quantityInput.value > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+            }
+        }
+
+        function openTab(evt, tabName) {
+            const tabContent = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = 'none';
+                tabContent[i].classList.remove('active');
+            }
+
+            const tabLinks = document.getElementsByClassName('tab-link');
+            for (let i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].className = tabLinks[i].className.replace(' active', '');
+            }
+
+            document.getElementById(tabName).style.display = 'block';
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.className += ' active';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+                    const stars = document.querySelectorAll('.review-star');
+                    const reviewForm = document.getElementById('review-form');
+                    
+                    stars.forEach(star => {
+                        star.addEventListener('click', function() {
+                            const rating = this.getAttribute('data-rating');
+                            stars.forEach(s => s.classList.remove('selected'));
+                            for (let i = 0; i < rating; i++) {
+                                stars[i].classList.add('selected');
+                            }
+                        });
+                    });
+            
+                    reviewForm.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        const button = reviewForm.querySelector('button[type="submit"]');
+                        const starContainer = document.createElement('div');
+                        starContainer.style.position = 'relative';
+                        starContainer.style.zIndex = '100';
+            
+                        for (let i = 0; i < 5; i++) {
+                            const star = document.createElement('i');
+                            star.classList.add('fas', 'fa-star', 'star-pop');
+                            star.style.left = `${Math.random() * 80 - 40}px`;
+                            star.style.top = `${Math.random() * 20 - 10}px`;
+                            star.style.animationDelay = `${i * 0.1}s`;
+                            starContainer.appendChild(star);
+                        }
+            
+                        button.appendChild(starContainer);
+                        setTimeout(() => starContainer.remove(), 1000);
+                    });
+                });
+    </script>
+</body>
+
+</html>
